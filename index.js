@@ -53,6 +53,17 @@ async function run() {
             }
             res.send({ admin });
         })
+        app.get('/users/delivery-man/:email', async (req, res) => {
+            const email = req.params.email;
+
+            const query = { email: email };
+            const user = await userCollection.findOne(query);
+            let deliveryMan = false;
+            if (user) {
+                deliveryMan = user?.role === "Delivery-Man"
+            }
+            res.send({ deliveryMan });
+        })
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email };
@@ -71,6 +82,17 @@ async function run() {
             const updatedDoc = {
                 $set: {
                     role: "Admin"
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc);
+            res.send(result)
+        })
+        app.patch('/users/delivery-man/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    role: "Delivery-Man"
                 }
             }
             const result = await userCollection.updateOne(filter, updatedDoc);
