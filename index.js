@@ -27,6 +27,7 @@ async function run() {
         await client.connect();
         const menuCollection = client.db('parcel-management-db').collection('menu');
         const userCollection = client.db('parcel-management-db').collection('users');
+        const orderCollection = client.db('parcel-management-db').collection('order');
 
         app.get('/dashboard/menu', async (req, res) => {
             const result = await menuCollection.find().toArray();
@@ -97,6 +98,19 @@ async function run() {
             }
             const result = await userCollection.updateOne(filter, updatedDoc);
             res.send(result)
+        })
+        app.get('/order', async (req, res) => {
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email }
+            }
+            const result = await orderCollection.find(query).toArray();
+            res.send(result);
+        })
+        app.post('/order', async (req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order);
+            res.send(result);
         })
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
