@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -42,6 +42,17 @@ async function run() {
             const result = await userCollection.findOne(query);
             res.send(result);
         })
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+
+            const query = { email: email };
+            const user = await userCollection.findOne(query);
+            let admin = false;
+            if (user) {
+                admin = user?.role === "Admin"
+            }
+            res.send({ admin });
+        })
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email };
@@ -53,6 +64,17 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
 
+        })
+        app.patch('/users/admin/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    role: "Admin"
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc);
+            res.send(result)
         })
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
