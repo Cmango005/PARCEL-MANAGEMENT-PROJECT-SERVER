@@ -127,7 +127,8 @@ async function run() {
                 $set: {
                     status: newUpdate.status ,
                     deliveryMan :newUpdate.deliveryMan,
-                    deliveryDate : newUpdate.deliveryDate
+                    deliveryDate : newUpdate.deliveryDate,
+                    review : newUpdate.review
                 }
             }
 
