@@ -24,7 +24,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+       // await client.connect();
         const menuCollection = client.db('parcel-management-db').collection('menu');
         const userCollection = client.db('parcel-management-db').collection('users');
         const orderCollection = client.db('parcel-management-db').collection('order');
@@ -128,7 +128,8 @@ async function run() {
                     status: newUpdate.status ,
                     deliveryMan :newUpdate.deliveryMan,
                     deliveryDate : newUpdate.deliveryDate,
-                    review : newUpdate.review
+                    review : newUpdate.review,
+                    photo :newUpdate.photo
                 }
             }
 
@@ -162,11 +163,11 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await orderCollection.deleteOne(query);
-            res.send(result)
+            res.send(result);
         })
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        // await client.db("admin").command({ ping: 1 });
+        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
         //await client.close();
